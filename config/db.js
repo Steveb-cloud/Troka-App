@@ -1,9 +1,9 @@
 import sql from 'mssql';
 
 const dbConfig = {
-    user: process.env.DB_USER || 'sa',
-    password: process.env.DB_PASSWORD || '20_Antuan-_05',
-    server: process.env.DB_HOST || '78.46.39.124',
+    user: process.env.DB_USER || '',
+    password: process.env.DB_PASSWORD || '',
+    server: process.env.DB_HOST || '',
     database: process.env.DB_DATABASE || 'TrokaDB',
     options: {
         encrypt: false,
