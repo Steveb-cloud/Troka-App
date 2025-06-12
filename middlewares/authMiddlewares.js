@@ -2,10 +2,8 @@ import jwt from 'jsonwebtoken';
 import { PRIVATE_KEY } from '../config/config.js';
 
 export const authMiddleware = (req, res, next) => {
-    // Inicializamos la sesión
     req.session = { user: null };
 
-    // Token desde cookie o desde header
     const token = req.cookies?.access_token || req.headers.authorization?.split(' ')[1];
 
     if (!token) {

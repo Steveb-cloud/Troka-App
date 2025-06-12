@@ -1,5 +1,5 @@
 import NodeCache from 'node-cache';
 
-const cache = new NodeCache({ stdTTL: 60 * 5 }); // TTL: 5 minutos
+const cache = new NodeCache({ stdTTL: 60 * 5 });
 
 export default cache;

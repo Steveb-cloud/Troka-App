@@ -32,10 +32,9 @@ export const login = async (req, res) => {
             { expiresIn: '2h' }
         );
 
-        // Opcional: guardar token como cookie HttpOnly
         res.cookie('access_token', token, {
             httpOnly: true,
-            secure: false, // true si estás en HTTPS
+            secure: false,
             sameSite: 'strict',
             maxAge: 2 * 60 * 60 * 1000 // 2 horas
         });
