@@ -15,6 +15,7 @@ router.get('/categorias', async (req, res) => {
     }
 });
 
+
 // Crear una nueva categoría
 router.post('/categorias', async (req, res) => {
     const { nombre } = req.body;

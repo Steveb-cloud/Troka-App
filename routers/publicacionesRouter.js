@@ -39,4 +39,20 @@ router.post('/publicaciones', async (req, res) => {
     }
 });
 
+// Obtener publicaciones por categoría
+router.get('/publicaciones/categoria/:id_categoria', async (req, res) => {
+    const { id_categoria } = req.params;
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('categoria_id', id_categoria)
+            .query('SELECT * FROM Publicaciones WHERE categoria_id = @categoria_id');
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('❌ Error al filtrar por categoría:', err);
+        res.status(500).send(err.message);
+    }
+});
+
+
 export default router;
