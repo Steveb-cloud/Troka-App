@@ -9,6 +9,7 @@ import publicacionesRouter from "./routers/publicacionesRouter.js";
 import mensajesRouter from "./routers/mensajesRouter.js";
 import authRouter from './routers/authRouter.js';
 import cookieParser from 'cookie-parser';
+import amigosRouter from './routers/amigosRouter.js';
 
 const app = express();
 
@@ -23,6 +24,7 @@ app.use(categoriasRouter);
 app.use(publicacionesRouter);
 app.use(mensajesRouter);
 app.use(authRouter);
+app.use(amigosRouter);
 
 
 app.listen(3000, () => console.log("Servidor corriendo en puerto 3000"));

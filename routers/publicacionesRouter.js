@@ -7,13 +7,26 @@ const router = express.Router();
 router.get('/publicaciones', async (req, res) => {
     try {
         const pool = await poolPromise;
-        const result = await pool.request().query('SELECT * FROM Publicaciones');
+        const result = await pool.request().query(`
+          SELECT 
+            p.id_publicacion,
+            p.titulo,
+            p.descripcion,
+            p.categoria_id,
+            c.nombre AS nombre_categoria,
+            p.id_usuario,
+            u.nombre AS nombre_usuario
+          FROM publicaciones p
+          JOIN categorias c ON c.id_categoria = p.categoria_id
+          JOIN usuarios u ON u.id_usuario = p.id_usuario
+        `);
         res.json(result.recordset);
     } catch (err) {
         console.error('❌ Error al obtener publicaciones:', err);
         res.status(500).send(err.message);
     }
 });
+
 
 // Crear una nueva publicación
 router.post('/publicaciones', async (req, res) => {
@@ -39,6 +52,28 @@ router.post('/publicaciones', async (req, res) => {
     }
 });
 
+// Obtener publicaciones de un usuario específico
+router.get('/publicaciones/usuario/:id_usuario', async (req, res) => {
+    const { id_usuario } = req.params;
+    try {
+        const pool = await poolPromise;
+        const result = await pool.request()
+            .input('id_usuario', id_usuario)
+            .query(`
+        SELECT p.id_publicacion, p.titulo, p.descripcion, p.categoria_id, c.nombre AS nombre_categoria, p.estado, p.imagen_url
+        FROM Publicaciones p
+        JOIN Categorias c ON c.id_categoria = p.categoria_id
+        WHERE p.id_usuario = @id_usuario
+        ORDER BY p.id_publicacion DESC
+      `);
+        res.json(result.recordset);
+    } catch (err) {
+        console.error('❌ Error al obtener publicaciones del usuario:', err);
+        res.status(500).send(err.message);
+    }
+});
+
+
 // Obtener publicaciones por categoría
 router.get('/publicaciones/categoria/:id_categoria', async (req, res) => {
     const { id_categoria } = req.params;
@@ -46,13 +81,27 @@ router.get('/publicaciones/categoria/:id_categoria', async (req, res) => {
         const pool = await poolPromise;
         const result = await pool.request()
             .input('categoria_id', id_categoria)
-            .query('SELECT * FROM Publicaciones WHERE categoria_id = @categoria_id');
+            .query(`
+              SELECT 
+                p.id_publicacion,
+                p.titulo,
+                p.descripcion,
+                p.categoria_id,
+                c.nombre AS nombre_categoria,
+                p.id_usuario,
+                u.nombre AS nombre_usuario
+              FROM publicaciones p
+              JOIN categorias c ON c.id_categoria = p.categoria_id
+              JOIN usuarios u ON u.id_usuario = p.id_usuario
+              WHERE p.categoria_id = @categoria_id
+            `);
         res.json(result.recordset);
     } catch (err) {
         console.error('❌ Error al filtrar por categoría:', err);
         res.status(500).send(err.message);
     }
 });
+
 
 
 export default router;

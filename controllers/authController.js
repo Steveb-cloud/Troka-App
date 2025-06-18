@@ -39,7 +39,17 @@ export const login = async (req, res) => {
             maxAge: 2 * 60 * 60 * 1000 // 2 horas
         });
 
-        res.json({ message: 'Login exitoso', token });
+        // Devuelve el token y los datos del usuario sin password
+        res.json({
+            message: 'Login exitoso',
+            token,
+            usuario: {
+                id_usuario: user.id_usuario,
+                nombre: user.nombre,
+                email: user.email
+            }
+        });
+
     } catch (err) {
         console.error(err);
         res.status(500).json({ message: 'Error interno del servidor' });
