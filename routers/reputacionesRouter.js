@@ -19,7 +19,7 @@ router.post('/reputaciones', async (req, res) => {
     try {
         const pool = await poolPromise;
         await pool.request()
-            .input('id_trueque', id_trueque)
+            .input('id_trueque', id_trueque || null)
             .input('id_usuario_calificado', id_usuario_calificado)
             .input('id_usuario_calificador', id_usuario_calificador)
             .input('puntuacion', puntuacion)

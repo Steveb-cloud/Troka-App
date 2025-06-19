@@ -53,6 +53,7 @@ router.post('/publicaciones', async (req, res) => {
 });
 
 // Obtener publicaciones de un usuario específico
+// Obtener publicaciones de un usuario que NO estén en trueques pendientes o aceptados
 router.get('/publicaciones/usuario/:id_usuario', async (req, res) => {
     const { id_usuario } = req.params;
     try {
@@ -60,18 +61,31 @@ router.get('/publicaciones/usuario/:id_usuario', async (req, res) => {
         const result = await pool.request()
             .input('id_usuario', id_usuario)
             .query(`
-        SELECT p.id_publicacion, p.titulo, p.descripcion, p.categoria_id, c.nombre AS nombre_categoria, p.estado, p.imagen_url
-        FROM Publicaciones p
-        JOIN Categorias c ON c.id_categoria = p.categoria_id
-        WHERE p.id_usuario = @id_usuario
-        ORDER BY p.id_publicacion DESC
-      `);
+                SELECT
+                    p.id_publicacion,
+                    p.titulo,
+                    p.descripcion,
+                    p.categoria_id,
+                    c.nombre AS nombre_categoria,
+                    p.estado,
+                    p.imagen_url
+                FROM Publicaciones p
+                         JOIN Categorias c ON c.id_categoria = p.categoria_id
+                WHERE p.id_usuario = @id_usuario
+                  AND p.id_publicacion NOT IN (
+                    SELECT id_publicacion1
+                    FROM Trueques
+                    WHERE estado IN ('pendiente', 'aceptado')
+                )
+                ORDER BY p.id_publicacion DESC
+            `);
         res.json(result.recordset);
     } catch (err) {
         console.error('❌ Error al obtener publicaciones del usuario:', err);
         res.status(500).send(err.message);
     }
 });
+
 
 
 // Obtener publicaciones por categoría
